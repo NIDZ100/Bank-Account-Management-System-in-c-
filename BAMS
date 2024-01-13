@@ -1,0 +1,204 @@
+#include <iostream>
+#include <string>
+#include <fstream>
+using namespace std;
+ofstream output;
+string namefile;
+char answer;
+ifstream ifile;
+
+// Define a struct named 'account'
+struct account {
+    // Member variables
+    int accountNr;
+    string Fname;
+    string Lname;
+    string phoneNr;
+    string street;
+    string city;
+    string postCode;
+    double deposit;
+
+    // Member function to display account information
+    void displayInfo() const {
+        cout <<"Account "<< accountNr <<" belongs to "<<endl << Fname << " " << Lname << endl << street<<", "<<postCode<<" "<<city<<endl<<"Phone: "<<phoneNr<<endl<<"Current balance: "<<deposit<<"€"<<endl;
+    }
+void fileInfo() const {
+    output << accountNr <<" " << Fname << " " << Lname << " " << street<<" "<<postCode<<" "<<city<<" "<<phoneNr<<" "<<deposit<<" "<<endl;
+}
+    void dele(int nr){
+      accountNr=102;
+
+    }
+    // Member function to input account information
+    void inputInfo() {
+        cout << "Enter first name: ";
+        getline(cin, Fname);
+
+        cout << "Enter last name: ";
+        getline(cin, Lname);
+
+        cout << "Enter phone number: ";
+        getline(cin, phoneNr);
+
+        cout << "Enter street: ";
+        getline(cin, street);
+
+        cout << "Enter city: ";
+        getline(cin, city);
+
+        cout << "Enter postal code: ";
+        getline(cin, postCode);
+    }
+     void inputDeposit() {
+        cout << "Enter deposit: ";
+        cin>>deposit;
+     }
+     void withdraw(int nr) {
+        double with;
+        cout << "Enter amount: ";
+        cin>>with;
+        if (with>deposit) {
+          cout<<"ERROR: not sufficient funds available"<<endl;
+        }else{
+          deposit=deposit-with;
+          cout<<with<<"€ withdrawn from account "<<nr<<endl;
+        }
+     }
+
+};
+ void readfile(){
+   do{
+   cout<<"Do you want to read in accounts from a file (y/n)?";
+   cin>>answer;
+  }while ((answer !='y') and (answer !='n'));
+   if (answer=='y'){
+     cout<<"Enter the name of the file: ";
+     cin>>namefile;
+     ifile.open(namefile);
+     if(ifile) {
+       output.open(namefile, ios::app);
+       cout<<"Account info is read in.";
+      } else {
+         cout<<"Error cannot read in file!\n";
+      }
+     
+   }
+  
+ }
+
+int main() {
+    int nr;
+    char choice;
+    string find;
+    // Create an array of account structures
+    account bank[100];
+    int g=0;
+    // Input data for each account
+
+    readfile();
+    
+    
+  do {
+      cout << "\no: Open account";
+      cout << "\nc: Close account";
+      cout << "\nd: deposit";
+      cout << "\nw: withdraw";
+      cout << "\na: Account info";
+      cout << "\np: Print all accounts";
+      cout << "\ns: Search for account";
+      cout << "\nq: quit";
+      cout << "\nEnter choice: ";
+      cin >> choice;
+      cin.ignore(); // using .getline later
+
+      if (choice == 'o') {
+      bank[g].accountNr=g;
+      bank[g].inputInfo();
+      cout<<"The account number is:  "<<g<<endl;
+      g++;
+    
+      }
+      else if (choice == 'p') {
+        for (int i = 0; i <=g-1; ++i) {
+          if(bank[i].accountNr!=102)
+            bank[i].displayInfo();
+        }
+     
+      }else if (choice == 'd') {
+        cout << "Enter account number: ";
+        cin>>nr;
+        if(bank[nr].accountNr!=102)
+         bank[nr].inputDeposit();
+        cout<<bank[nr].deposit<<"€ deposited to account "<<nr<<endl;
+      }else if (choice == 'w') {
+        cout << "Enter account number: ";
+        cin>>nr;
+        if(bank[nr].accountNr!=102)
+         bank[nr].withdraw(nr);
+        
+      }else if (choice == 'a') {
+        cout << "Enter account number: ";
+        cin>>nr;
+        if(bank[nr].accountNr!=102)
+         bank[nr].displayInfo();
+      }else if (choice == 'c') {
+        cout << "Enter account number: ";
+        cin>>nr;
+        bank[nr].dele(nr);
+      }else if (choice == 's') {
+        nr=0;
+        cout<<"Enter search option"<<endl;
+        cout<<"1: last name"<<endl;
+        cout<<"2: phone number"<<endl;
+        
+        cin>>nr;
+        
+       
+          if(nr==1){
+            cin.ignore();
+            cout << "Enter last name: ";
+            getline(cin, find);
+            
+            for (int i = 0; i <=g-1; ++i) {
+                if(bank[i].Lname==find && bank[i].accountNr!=102){
+                  
+                  bank[i].displayInfo();
+            }}
+          }else if(nr==2){
+            cout << "Enter phone number: ";
+            cin.ignore();
+            getline(cin, find);
+            
+            for (int i = 0; i <=g-1; ++i) {
+                if(bank[i].phoneNr==find && bank[i].accountNr!=102){
+                 
+                  bank[i].displayInfo();
+            }}
+          }
+      }}while (choice != 'q');
+      
+
+  //writefile();
+   do{
+     cout<<"Do you want to save the information to a file (y/n)?";
+     cin>>answer;
+    }while ((answer !='y') and (answer !='n'));
+     if (answer=='y'){
+       cout<<"Enter the name of the file: ";
+       cin>>namefile;
+         output.open(namefile);
+         cout<<"Account info is saved.";
+         output<<g<<endl; //number of the next account(if we open)
+         for (int i = 0; i <=g-1; ++i) {
+           if(bank[i].accountNr!=102)
+             bank[i].fileInfo();
+         }
+        } 
+        cout<<"Have a nice day….";
+
+  
+
+
+    return 0;
+}
